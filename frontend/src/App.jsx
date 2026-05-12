@@ -1,7 +1,3 @@
-/**
- * src/App.jsx — фінальна версія з усіма трьома ролями
- */
-
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';

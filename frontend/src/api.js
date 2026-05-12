@@ -38,14 +38,14 @@ api.interceptors.response.use(
 
 // ЗГРУПОВАНІ API-МЕТОДИ
 
-/** Аутентифікація */
+/* Аутентифікація */
 export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   register: (userData) => api.post('/auth/register', userData),
   getMe: () => api.get('/auth/me'),
 };
 
-/** Довідник послуг та запчастин */
+/* Довідник послуг та запчастин */
 export const inventoryAPI = {
   getAll: () => api.get('/inventory'),
   create: (data) => api.post('/inventory', data),
@@ -53,7 +53,7 @@ export const inventoryAPI = {
   delete: (id) => api.delete(`/inventory/${id}`),
 };
 
-/** Наряди-замовлення */
+/* Наряди-замовлення */
 export const appointmentsAPI = {
   getAll: () => api.get('/appointments'),
   getById: (id) => api.get(`/appointments/${id}`),
@@ -63,7 +63,7 @@ export const appointmentsAPI = {
   update: (id, data) => api.put(`/appointments/${id}`, data),
 };
 
-/** Користувачі (для форм адміна) */
+/* Користувачі (для форм адміна) */
 export const usersAPI = {
   getAll: (role) => api.get('/users', { params: role ? { role } : {} }),
   getClients: () => api.get('/users', { params: { role: 'client' } }),

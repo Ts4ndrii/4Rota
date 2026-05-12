@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Пароль є обов'язковим"],
-      minlength: 6,
+      minlength: 5,
     },
     role: {
       type: String,
@@ -612,7 +612,7 @@ app.get('/api/users', protect, restrictTo('admin'), async (req, res) => {
   }
 });
 
-// SEED — ПОЧАТКОВІ ДАНІ (лише для розробки)
+// SEED — ПОЧАТКОВІ ДАНІ
 
 /**
  * POST /api/seed — Заповнити БД тестовими даними
@@ -624,23 +624,30 @@ app.post('/api/seed', async (req, res) => {
     await Appointment.deleteMany({});
 
     const admin = await User.create({
-      fullName: 'Адміністратор Системи',
+      fullName: 'Адміністратор',
       email: 'admin@sto.ua',
-      password: 'admin123',
+      password: 'admin',
       role: 'admin',
     });
 
     const mechanic = await User.create({
-      fullName: 'Іван Коваль',
+      fullName: 'Микола Колінвал',
       email: 'mechanic@sto.ua',
-      password: 'mechanic123',
+      password: 'mechanic',
+      role: 'mechanic',
+    });
+
+    const mechanic2 = await User.create({
+      fullName: 'Олександр Петров',
+      email: 'oleksandr@sto.ua',
+      password: 'oleksandr',
       role: 'mechanic',
     });
 
     const client = await User.create({
-      fullName: 'Петро Шевченко',
-      email: 'client@sto.ua',
-      password: 'client123',
+      fullName: 'Андрій Ціпкайло',
+      email: 'andrii@sto.ua',
+      password: 'andrii',
       role: 'client',
       cars: [
         { vin: 'WBA3A5C55FK123456', make: 'BMW 3 Series 2015' },
@@ -667,9 +674,10 @@ app.post('/api/seed', async (req, res) => {
     res.json({
       message: 'Тестові дані успішно створено!',
       credentials: {
-        admin: { email: 'admin@sto.ua', password: 'admin123' },
-        mechanic: { email: 'mechanic@sto.ua', password: 'mechanic123' },
-        client: { email: 'client@sto.ua', password: 'client123' },
+        admin: { email: 'admin@sto.ua', password: 'admin' },
+        mechanic: { email: 'mechanic@sto.ua', password: 'mechanic' },
+        mechanic2: { email: 'oleksandr@sto.ua', password: 'oleksandr' },
+        client: { email: 'andrii@sto.ua', password: 'andrii' },
       },
     });
   } catch (error) {

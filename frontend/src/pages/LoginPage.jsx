@@ -192,18 +192,18 @@ function LoginPage() {
 
           {/* Підказка тестових даних */}
           <div className="mt-5 pt-4 border-t border-dark-700">
-            <p className="text-xs text-dark-500 text-center font-mono mb-2">// Тестові облікові записи</p>
+            <p className="text-xs text-dark-500 text-center font-mono mb-2">Тестові облікові записи</p>
             <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
-                onClick={() => { setEmail('admin@sto.ua'); setPassword('admin123'); }}
+                onClick={() => { setEmail('admin@sto.ua'); setPassword('admin'); }}
                 className="text-xs px-3 py-2 bg-dark-900 border border-dark-700 rounded-lg text-dark-400 hover:text-dark-200 hover:border-brand-500/50 transition-all font-mono text-left"
               >
                 <span className="text-brand-400">admin</span>@sto.ua
               </button>
               <button
                 type="button"
-                onClick={() => { setEmail('mechanic@sto.ua'); setPassword('mechanic123'); }}
+                onClick={() => { setEmail('mechanic@sto.ua'); setPassword('mechanic'); }}
                 className="text-xs px-3 py-2 bg-dark-900 border border-dark-700 rounded-lg text-dark-400 hover:text-dark-200 hover:border-brand-500/50 transition-all font-mono text-left"
               >
                 <span className="text-blue-400">mechanic</span>@sto.ua
