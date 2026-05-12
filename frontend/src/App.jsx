@@ -7,6 +7,7 @@ const LoginPage          = lazy(() => import('./pages/LoginPage'));
 const AdminDashboard     = lazy(() => import('./pages/AdminDashboard'));
 const MechanicDashboard  = lazy(() => import('./pages/MechanicDashboard'));
 const ClientDashboard    = lazy(() => import('./pages/ClientDashboard'));
+const UsersPage          = lazy(() => import('./pages/UsersPage'));
 
 function PageLoader() {
   return (
@@ -23,7 +24,6 @@ function RootRedirect() {
   const { isAuthenticated, user, loading } = useAuth();
   if (loading) return <PageLoader />;
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  // Редирект залежно від ролі
   const routes = { admin: '/admin', mechanic: '/mechanic', client: '/client' };
   return <Navigate to={routes[user.role] || '/login'} replace />;
 }
@@ -37,21 +37,19 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
 
             <Route path="/admin" element={
-              <ProtectedRoute allowedRoles="admin">
-                <AdminDashboard />
-              </ProtectedRoute>
+              <ProtectedRoute allowedRoles="admin"><AdminDashboard /></ProtectedRoute>
+            }/>
+
+            <Route path="/admin/users" element={
+              <ProtectedRoute allowedRoles="admin"><UsersPage /></ProtectedRoute>
             }/>
 
             <Route path="/mechanic" element={
-              <ProtectedRoute allowedRoles="mechanic">
-                <MechanicDashboard />
-              </ProtectedRoute>
+              <ProtectedRoute allowedRoles="mechanic"><MechanicDashboard /></ProtectedRoute>
             }/>
 
             <Route path="/client" element={
-              <ProtectedRoute allowedRoles="client">
-                <ClientDashboard />
-              </ProtectedRoute>
+              <ProtectedRoute allowedRoles="client"><ClientDashboard /></ProtectedRoute>
             }/>
 
             <Route path="/" element={<RootRedirect />} />

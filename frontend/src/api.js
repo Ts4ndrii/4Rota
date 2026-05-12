@@ -65,9 +65,11 @@ export const appointmentsAPI = {
 
 /* Користувачі (для форм адміна) */
 export const usersAPI = {
-  getAll: (role) => api.get('/users', { params: role ? { role } : {} }),
-  getClients: () => api.get('/users', { params: { role: 'client' } }),
-  getMechanics: () => api.get('/users', { params: { role: 'mechanic' } }),
+  getAll:      (role) => api.get('/users', { params: role ? { role } : {} }),
+  getClients:  ()     => api.get('/users', { params: { role: 'client' } }),
+  getMechanics:()     => api.get('/users', { params: { role: 'mechanic' } }),
+  update:      (id, data) => api.put(`/users/${id}`, data),
+  delete:      (id)       => api.delete(`/users/${id}`),
 };
 
 export default api;

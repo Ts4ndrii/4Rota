@@ -612,6 +612,47 @@ app.get('/api/users', protect, restrictTo('admin'), async (req, res) => {
   }
 });
 
+/**
+ * PUT /api/users/:id — Редагувати користувача (лише адмін)
+ */
+app.put('/api/users/:id', protect, restrictTo('admin'), async (req, res) => {
+  try {
+    const { fullName, email, role, cars } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'Користувача не знайдено.' });
+
+    if (fullName) user.fullName = fullName;
+    if (email)    user.email    = email;
+    if (role)     user.role     = role;
+    if (cars)     user.cars     = cars;
+    // Змінюємо пароль лише якщо передано
+    if (req.body.password) user.password = req.body.password;
+
+    await user.save();
+    const updated = await User.findById(user._id).select('-password');
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
+
+/**
+ * DELETE /api/users/:id — Видалити користувача (лише адмін)
+ */
+app.delete('/api/users/:id', protect, restrictTo('admin'), async (req, res) => {
+  try {
+    // Не дозволяємо адміну видалити самого себе
+    if (req.params.id === req.user._id.toString()) {
+      return res.status(400).json({ message: 'Не можна видалити власний обліковий запис.' });
+    }
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: 'Користувача не знайдено.' });
+    res.json({ message: 'Користувача видалено.' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // SEED — ПОЧАТКОВІ ДАНІ
 
 /**

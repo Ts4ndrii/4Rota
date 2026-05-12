@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { appointmentsAPI, inventoryAPI, usersAPI, authAPI } from '../api';
 import api from '../api';
@@ -514,8 +515,10 @@ function ClientsModal({ onClose, clients }) {
 // ГОЛОВНИЙ КОМПОНЕНТ
 function AdminDashboard() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const [inventory,    setInventory]    = useState([]);
+  const [users,        setUsers]        = useState([]);
   const [clients,      setClients]      = useState([]);
   const [mechanics,    setMechanics]    = useState([]);
   const [loadingData,  setLoadingData]  = useState(true);
@@ -530,17 +533,32 @@ function AdminDashboard() {
   const fetchAll = useCallback(async () => {
     setLoadingData(true); setError('');
     try {
-      const [apptRes, invRes, clientRes, mechRes] = await Promise.all([
+      const [apptRes, invRes, clientRes, mechRes, usersRes] = await Promise.all([
         appointmentsAPI.getAll(), inventoryAPI.getAll(),
-        usersAPI.getClients(),    usersAPI.getMechanics(),
+        usersAPI.getClients(),    usersAPI.getMechanics(), usersAPI.getAll()
       ]);
       setAppointments(apptRes.data); setInventory(invRes.data);
       setClients(clientRes.data);    setMechanics(mechRes.data);
+      setUsers(usersRes.data);
     } catch (err) {
       setError('Помилка завантаження: ' + (err.response?.data?.message || err.message));
     } finally { setLoadingData(false); }
   }, []);
 
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await usersAPI.getAll();
+      setUsers(data);
+    } catch (err) {
+      setError('Помилка завантаження: ' + (err.response?.data?.message || err.message));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchUsers(); }, [fetchUsers]);
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const handleDelete = async (id) => {
@@ -614,7 +632,7 @@ function AdminDashboard() {
             ))}
           </div>
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => setShowClients(true)}  className="btn-secondary text-sm">👥 Клієнти ({clients.length})</button>
+            <button onClick={() => navigate('/admin/users')}  className="btn-secondary text-sm">👥 Користувачі ({users.length})</button>
             <button onClick={() => setShowRegister(true)} className="btn-secondary text-sm">👤 Новий клієнт</button>
             <button onClick={() => setShowInventory(true)} className="btn-secondary text-sm">📋 Довідник</button>
             <button onClick={() => setShowCreate(true)}   className="btn-primary text-sm">+ Новий наряд</button>
@@ -644,7 +662,6 @@ function AdminDashboard() {
                   <div className="space-y-1">
                     <p className="text-dark-100 text-sm font-medium">{appt.client?.fullName || '—'}</p>
                     <p className="text-dark-500 text-xs">{appt.client?.email}</p>
-                    {/* Авто наряду */}
                     {appt.car?.make && (
                       <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 bg-brand-500/10 border border-brand-500/30 rounded text-brand-300 font-mono">
                         🚗 {appt.car.make}{appt.car.vin ? ` · ${appt.car.vin}` : ''}
