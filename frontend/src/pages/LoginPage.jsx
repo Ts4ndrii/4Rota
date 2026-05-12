@@ -190,7 +190,7 @@ function LoginPage() {
             </button>
           </form>
 
-          {/* Підказка тестових даних */}
+          {/* Підказка тестових даних
           <div className="mt-5 pt-4 border-t border-dark-700">
             <p className="text-xs text-dark-500 text-center font-mono mb-2">Тестові облікові записи</p>
             <div className="grid grid-cols-2 gap-2">
@@ -210,6 +210,7 @@ function LoginPage() {
               </button>
             </div>
           </div>
+          */}
         </div>
 
         <p className="text-center text-dark-600 text-xs mt-6 font-mono">

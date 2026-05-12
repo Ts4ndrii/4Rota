@@ -218,7 +218,7 @@ function MechanicDashboard() {
               </svg>
             </div>
             <span className="font-display font-bold text-dark-100 tracking-wide uppercase text-sm">
-              CRM <span className="text-brand-400">СТО</span>
+              4 <span className="text-brand-400">Rota</span>
             </span>
           </div>
           <div className="flex items-center gap-2">

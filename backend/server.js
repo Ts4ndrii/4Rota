@@ -566,22 +566,44 @@ app.delete('/api/appointments/:id', protect, restrictTo('admin'), async (req, re
  */
 app.post('/api/appointments/request', protect, restrictTo('client'), async (req, res) => {
   try {
-    const { date, notes, carVin } = req.body;
+    const { date, notes, car } = req.body;
 
     if (!date) {
       return res.status(400).json({ message: 'Дата є обов\'язковою.' });
     }
 
-    const mechanic = await User.findOne({ role: 'mechanic' });
-    if (!mechanic) {
+    if (!notes || notes.trim() === '') {
+      return res.status(400).json({ message: 'Опис проблеми є обов\'язковим.' });
+    }
+
+    // Знаходимо всіх майстрів
+    const mechanics = await User.find({ role: 'mechanic' });
+    if (!mechanics || mechanics.length === 0) {
       return res.status(400).json({ message: 'Наразі немає доступних майстрів.' });
+    }
+
+    // Вибираємо майстра з найменшою кількістю активних нарядів
+    let selectedMechanic = mechanics[0];
+    let minActiveCount = Infinity;
+
+    for (const mechanic of mechanics) {
+      const activeCount = await Appointment.countDocuments({
+        mechanic: mechanic._id,
+        status: { $in: ['pending', 'in_progress'] }
+      });
+      
+      if (activeCount < minActiveCount) {
+        minActiveCount = activeCount;
+        selectedMechanic = mechanic;
+      }
     }
 
     const appointment = await Appointment.create({
       client:        req.user._id,
-      mechanic:      mechanic._id,
+      mechanic:      selectedMechanic._id,
       date,
       notes,
+      car:           car || null,
       status:        'pending',
       repairDetails: [],
     });

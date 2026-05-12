@@ -21,7 +21,7 @@ function IconX() {
 /* Бейдж ролі користувача */
 function RoleBadge({ role }) {
   const config = {
-    admin:    { label: 'Адмін',   cls: 'bg-brand-900/40 text-brand-300 border-brand-700/50' },
+    admin:    { label: 'Адміністратор',   cls: 'bg-brand-900/40 text-brand-300 border-brand-700/50' },
     mechanic: { label: 'Майстер', cls: 'bg-blue-900/40 text-blue-300 border-blue-700/50' },
     client:   { label: 'Клієнт',  cls: 'bg-purple-900/40 text-purple-300 border-purple-700/50' },
   };
@@ -267,7 +267,7 @@ function UsersPage() {
 
   const roleFilters = [
     { value: 'all',      label: 'Всі',       count: stats.total    },
-    { value: 'admin',    label: 'Адміни',    count: stats.admin    },
+    { value: 'admin',    label: 'Адміністратори',    count: stats.admin    },
     { value: 'mechanic', label: 'Майстри',   count: stats.mechanic },
     { value: 'client',   label: 'Клієнти',   count: stats.client   },
   ];
@@ -286,7 +286,7 @@ function UsersPage() {
               </svg>
             </div>
             <span className="font-display font-bold text-dark-100 tracking-wide uppercase text-sm">
-              CRM <span className="text-brand-400">СТО</span>
+              4 <span className="text-brand-400">Rota</span>
             </span>
 
             {/* Навігація між сторінками */}
@@ -295,7 +295,7 @@ function UsersPage() {
                 className="text-xs px-3 py-1.5 text-dark-400 hover:text-dark-100 hover:bg-dark-800 rounded-lg transition-all">
                 ← Наряди
               </button>
-              <span className="text-dark-600 text-xs font-mono">/ користувачі</span>
+              <span className="text-dark-600 text-xs font-mono">/ users</span>
             </div>
           </div>
 
@@ -327,7 +327,7 @@ function UsersPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: 'Всього',    value: stats.total,    color: 'text-dark-100' },
-            { label: 'Адміни',   value: stats.admin,    color: 'text-brand-300' },
+            { label: 'Адміністратори',   value: stats.admin,    color: 'text-brand-300' },
             { label: 'Майстри',  value: stats.mechanic, color: 'text-blue-300' },
             { label: 'Клієнти',  value: stats.client,   color: 'text-purple-300' },
           ].map(s => (

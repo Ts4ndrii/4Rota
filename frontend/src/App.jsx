@@ -2,12 +2,14 @@ import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const LoginPage          = lazy(() => import('./pages/LoginPage'));
 const AdminDashboard     = lazy(() => import('./pages/AdminDashboard'));
 const MechanicDashboard  = lazy(() => import('./pages/MechanicDashboard'));
 const ClientDashboard    = lazy(() => import('./pages/ClientDashboard'));
 const UsersPage          = lazy(() => import('./pages/UsersPage'));
+const NotFoundPage       = lazy(() => import('./pages/NotFoundPage'));
 
 function PageLoader() {
   return (
@@ -30,34 +32,36 @@ function RootRedirect() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AuthProvider>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
 
-            <Route path="/admin" element={
-              <ProtectedRoute allowedRoles="admin"><AdminDashboard /></ProtectedRoute>
-            }/>
+              <Route path="/admin" element={
+                <ProtectedRoute allowedRoles="admin"><AdminDashboard /></ProtectedRoute>
+              }/>
 
-            <Route path="/admin/users" element={
-              <ProtectedRoute allowedRoles="admin"><UsersPage /></ProtectedRoute>
-            }/>
+              <Route path="/admin/users" element={
+                <ProtectedRoute allowedRoles="admin"><UsersPage /></ProtectedRoute>
+              }/>
 
-            <Route path="/mechanic" element={
-              <ProtectedRoute allowedRoles="mechanic"><MechanicDashboard /></ProtectedRoute>
-            }/>
+              <Route path="/mechanic" element={
+                <ProtectedRoute allowedRoles="mechanic"><MechanicDashboard /></ProtectedRoute>
+              }/>
 
-            <Route path="/client" element={
-              <ProtectedRoute allowedRoles="client"><ClientDashboard /></ProtectedRoute>
-            }/>
+              <Route path="/client" element={
+                <ProtectedRoute allowedRoles="client"><ClientDashboard /></ProtectedRoute>
+              }/>
 
-            <Route path="/" element={<RootRedirect />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
-      </AuthProvider>
-    </BrowserRouter>
+              <Route path="/" element={<RootRedirect />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </Suspense>
+        </AuthProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
