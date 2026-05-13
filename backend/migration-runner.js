@@ -102,7 +102,7 @@ async function runMigrations() {
     console.log(`\n Migration Runner завершено`);
     console.log(`   Виконано: ${executedCount} нова(их) міграцій\n`);
 
-  
+  await ensureAdminPasswordIsHashed();
   } catch (error) {
     console.error('Критична помилка Migration Runner:', error);
     throw error;
