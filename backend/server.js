@@ -745,9 +745,9 @@ app.post('/api/seed', async (req, res) => {
 });
 
 /**
- * GET /api/health — Перевірка стану API
+ * POST /api/health — Перевірка стану API
  */
-app.get('/api/health', (req, res) => {
+app.post('/api/health', (req, res) => {
   res.json({ 
     status: 'ok',
     timestamp: new Date().toISOString(),
