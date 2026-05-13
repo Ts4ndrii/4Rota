@@ -702,14 +702,6 @@ app.post('/api/seed', async (req, res) => {
       });
     }
 
-    // Створюємо адміністратора
-    const admin = await User.create({
-      fullName: 'Адміністратор',
-      email: 'admin@sto.ua',
-      password: 'admin',
-      role: 'admin',
-    });
-
     // Створюємо базовий список послуг та запчастин
     const services = [
       { name: 'Заміна моторного масла', type: 'service', price: 500 },
