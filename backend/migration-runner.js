@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const migrationSchema = new mongoose.Schema(
   {
@@ -19,28 +18,6 @@ const migrationSchema = new mongoose.Schema(
 );
 
 const MigrationRecord = mongoose.model('MigrationRecord', migrationSchema);
-
-async function ensureAdminPasswordIsHashed() {
-  const User = mongoose.models.User;
-  if (!User) {
-    return;
-  }
-
-  const admin = await User.findOne({ email: 'admin@sto.ua' }).select('+password');
-  if (!admin) {
-    return;
-  }
-
-  const passwordValue = String(admin.password || '');
-  const looksHashed = passwordValue.startsWith('$2a$') || passwordValue.startsWith('$2b$') || passwordValue.startsWith('$2y$');
-
-  if (!looksHashed) {
-    admin.password = await bcrypt.hash(passwordValue, 10);
-    await admin.save();
-    console.log('Адміністратор перевірений і пароль захешовано');
-  }
-}
-
 
 async function runMigrations() {
   try {
