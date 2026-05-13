@@ -2,6 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@sto.ua';
+const BCRYPT_PREFIXES = ['$2a$', '$2b$', '$2y$'];
+
 const migrationSchema = new mongoose.Schema(
   {
     name: {
@@ -25,19 +28,19 @@ async function ensureAdminPasswordIsHashed() {
     return;
   }
 
-  const admin = await User.findOne({ email: 'admin@sto.ua' }).select('+password');
+  const admin = await User.findOne({ email: ADMIN_EMAIL }).select('+password');
   if (!admin) {
     return;
   }
 
   const passwordValue = String(admin.password || '');
-  const looksHashed = passwordValue.startsWith('$2a$') || passwordValue.startsWith('$2b$') || passwordValue.startsWith('$2y$');
+  const looksHashed = BCRYPT_PREFIXES.some(prefix => passwordValue.startsWith(prefix));
 
   if (!looksHashed) {
     admin.password = passwordValue;
     admin.markModified('password');
     await admin.save();
-    console.log('Адміністратор перевірений і пароль оновлено');
+    console.log('Адміністратора перевірено і пароль оновлено');
   }
 }
 
