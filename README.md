@@ -1,7 +1,7 @@
 # 4Rota — Система управління автосервісом (СТО)
 
 [![Live Demo](https://img.shields.io/badge/🚀_Демо-Render-46a2f1?style=flat-square)](fourrota.onrender.com)
-![License](https://img.shields.io/badge/license-GPL-3.0-blue)
+[![License: GPL v3](https://shields.io)](https://gnu.org)
 [![Node.js](https://img.shields.io/badge/node-18%2B-brightgreen?style=flat-square&logo=node.js)](https://nodejs.org)
 [![MongoDB](https://img.shields.io/badge/MongoDB-6%2B-4ea94b?style=flat-square&logo=mongodb)](https://www.mongodb.com/atlas)
 [![Docker](https://img.shields.io/badge/Docker-✔-2496ed?style=flat-square&logo=docker)](https://www.docker.com/)
