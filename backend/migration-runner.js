@@ -36,7 +36,7 @@ async function ensureAdminPasswordIsHashed() {
   if (!looksHashed) {
     admin.password = passwordValue;
     await admin.save();
-    console.log('Адміністратор перевірений і пароль захешовано');
+    console.log('Адміністратор перевірений і пароль оновлено');
   }
 }
 
