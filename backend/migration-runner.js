@@ -34,12 +34,16 @@ async function ensureAdminPasswordIsHashed() {
   }
 
   const passwordValue = String(admin.password || '');
+  if (!passwordValue.trim()) {
+    throw new Error('У адміністратора порожній пароль. Оновіть пароль admin@sto.ua вручну.');
+  }
+
   const looksHashed = BCRYPT_PREFIXES.some(prefix => passwordValue.startsWith(prefix));
 
   if (!looksHashed) {
     admin.markModified('password');
     await admin.save();
-    console.log('Адміністратора перевірено і пароль оновлено');
+    console.log('Виявлено plaintext пароль адміністратора, виконано хешування');
   }
 }
 
