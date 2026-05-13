@@ -1,0 +1,13 @@
+{
+  "name": "4rota",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build"
+  },
+  "dependencies": {
+    "@netlify/database": "^1.0.0",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
