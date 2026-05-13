@@ -37,7 +37,6 @@ async function ensureAdminPasswordIsHashed() {
   const looksHashed = BCRYPT_PREFIXES.some(prefix => passwordValue.startsWith(prefix));
 
   if (!looksHashed) {
-    admin.password = passwordValue;
     admin.markModified('password');
     await admin.save();
     console.log('Адміністратора перевірено і пароль оновлено');
