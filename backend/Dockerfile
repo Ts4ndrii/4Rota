@@ -24,7 +24,7 @@ EXPOSE 5000
 
 # Health check
 HEALTHCHECK --interval=10s --timeout=5s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:5000/api/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+  CMD node -e "const http=require('http'); const req=http.get('http://localhost:5000/api/health', (res) => { res.resume(); res.on('end', () => process.exit(res.statusCode === 200 ? 0 : 1)); }); req.on('error', () => process.exit(1));"
 
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "server.js"]

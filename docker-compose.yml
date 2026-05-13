@@ -43,7 +43,7 @@ services:
     networks:
       - 4rota_network
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/api/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"]
+      test: ["CMD", "node", "-e", "const http=require('http'); const req=http.get('http://localhost:5000/api/health', (res) => { res.resume(); res.on('end', () => process.exit(res.statusCode === 200 ? 0 : 1)); }); req.on('error', () => process.exit(1));"]
       interval: 10s
       timeout: 5s
       retries: 5
