@@ -41,7 +41,7 @@
 
 ```bash
 # 1. Клонуємо репозиторій
-git clone https://github.com/your-username/4rota.git
+git clone https://github.com/Ts4ndrii/4rota.git
 cd 4rota
 
 # 2. Запускаємо весь стек
