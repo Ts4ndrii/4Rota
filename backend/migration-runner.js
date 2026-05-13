@@ -35,7 +35,7 @@ async function ensureAdminPasswordIsHashed() {
   const looksHashed = passwordValue.startsWith('$2a$') || passwordValue.startsWith('$2b$') || passwordValue.startsWith('$2y$');
 
   if (!looksHashed) {
-    admin.password = await bcrypt.hash('admin', 10);
+    admin.password = await bcrypt.hash(passwordValue, 10);
     await admin.save();
     console.log('Адміністратор перевірений і пароль захешовано');
   }
