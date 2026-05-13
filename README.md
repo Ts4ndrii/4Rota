@@ -1,8 +1,10 @@
 # 4Rota — Система управління автосервісом (СТО)
 
-![License](https://img.shields.io/badge/license-ISC-blue)
-![Node.js](https://img.shields.io/badge/node-%3E%3D18-green)
-![Docker](https://img.shields.io/badge/docker-available-blue)
+[![Live Demo](https://img.shields.io/badge/🚀_Демо-Render-46a2f1?style=flat-square)](fourrota.onrender.com)
+![License](https://img.shields.io/badge/license-GPL-3.0-blue)
+[![Node.js](https://img.shields.io/badge/node-18%2B-brightgreen?style=flat-square&logo=node.js)](https://nodejs.org)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6%2B-4ea94b?style=flat-square&logo=mongodb)](https://www.mongodb.com/atlas)
+[![Docker](https://img.shields.io/badge/Docker-✔-2496ed?style=flat-square&logo=docker)](https://www.docker.com/)
 
 Сучасна веб-система для управління автосервісом з підтримкою ролей користувачів, управління нарядами-замовленнями, послугами та запчастинами.
 
@@ -27,7 +29,7 @@
 - **Docker Compose** v2.0+
 
 ### Для локальної розробки:
-- **Node.js** v18+
+- **Node.js** v20+
 - **npm** v9+
 - **MongoDB** v7.0+ (локальна БД або MongoDB Atlas)
 
