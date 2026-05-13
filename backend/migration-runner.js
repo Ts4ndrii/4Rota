@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const mongoose = require('mongoose');
 
+const BCRYPT_PREFIXES = ['bcrypt', '$2a$', '$2b$', '$2y$'];
+
 const migrationSchema = new mongoose.Schema(
   {
     name: {
@@ -18,6 +20,30 @@ const migrationSchema = new mongoose.Schema(
 );
 
 const MigrationRecord = mongoose.model('MigrationRecord', migrationSchema);
+
+async function ensureAdminPasswordIsHashed() {
+  const User = mongoose.models.User;
+  if (!User) {
+    return;
+  }
+
+  const admin = await User.findOne({ email: 'admin@sto.ua' }).select('+password');
+  if (!admin) {
+    return;
+  }
+
+  const passwordValue = String(admin.password || '');
+  if (!passwordValue.trim()) {
+    throw new Error('Пароль адміністратора порожній. Оновіть вручну');
+  }
+  const looksHashed = BCRYPT_PREFIXES.some(prefix => passwordValue.startsWith(prefix));
+
+  if (!looksHashed) {
+    admin.markModified('password');
+    await admin.save();
+    console.log('Виявлено plaintext пароль адміністратора. Він був оновлений та захешований.');
+  }
+}
 
 async function runMigrations() {
   try {
@@ -76,6 +102,7 @@ async function runMigrations() {
     console.log(`\n Migration Runner завершено`);
     console.log(`   Виконано: ${executedCount} нова(их) міграцій\n`);
 
+  
   } catch (error) {
     console.error('Критична помилка Migration Runner:', error);
     throw error;
