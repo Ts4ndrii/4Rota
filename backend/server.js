@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const cors = require('cors');
 require('dotenv').config();
 
+const { runMigrations } = require('./migration-runner');
+
 const app = express();
 
 app.use(cors());
@@ -13,7 +15,17 @@ app.use(express.json());
 // MONGODB
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB підключено успішно'))
+  .then(async () => {
+    console.log('MongoDB підключено успішно');
+    
+    // Запускаємо міграції після підключення до БД
+    try {
+      await runMigrations();
+    } catch (error) {
+      console.error('❌ Критична помилка при запуску міграцій. Сервер не запустився.');
+      process.exit(1);
+    }
+  })
   .catch((err) => {
     console.error('Помилка підключення до MongoDB:', err.message);
     process.exit(1);
@@ -678,14 +690,19 @@ app.delete('/api/users/:id', protect, restrictTo('admin'), async (req, res) => {
 // SEED — ПОЧАТКОВІ ДАНІ
 
 /**
- * POST /api/seed — Заповнити БД тестовими даними
+ * POST /api/seed — Заповнити БД мінімальними даними 
  */
 app.post('/api/seed', async (req, res) => {
   try {
-    await User.deleteMany({});
-    await Inventory.deleteMany({});
-    await Appointment.deleteMany({});
+    // Перевірка чи вже існує адмін
+    const existingAdmin = await User.findOne({ role: 'admin' });
+    if (existingAdmin) {
+      return res.status(400).json({ 
+        message: 'БД уже ініціалізована. Адміністратор вже існує.' 
+      });
+    }
 
+    // Створюємо адміністратора
     const admin = await User.create({
       fullName: 'Адміністратор',
       email: 'admin@sto.ua',
@@ -693,59 +710,49 @@ app.post('/api/seed', async (req, res) => {
       role: 'admin',
     });
 
-    const mechanic = await User.create({
-      fullName: 'Микола Колінвал',
-      email: 'mechanic@sto.ua',
-      password: 'mechanic',
-      role: 'mechanic',
-    });
+    // Створюємо базовий список послуг та запчастин
+    const services = [
+      { name: 'Заміна моторного масла', type: 'service', price: 500 },
+      { name: 'Заміна повітряного фільтра', type: 'service', price: 300 },
+      { name: 'Заміна гальмівних колодок', type: 'service', price: 800 },
+      { name: 'Діагностика підвіски', type: 'service', price: 600 },
+      { name: 'Шиномонтаж (4 колеса)', type: 'service', price: 400 },
+      { name: 'Масляний фільтр', type: 'part', price: 150 },
+      { name: 'Повітряний фільтр', type: 'part', price: 120 },
+      { name: 'Гальмівна рідина', type: 'part', price: 200 },
+    ];
 
-    const mechanic2 = await User.create({
-      fullName: 'Олександр Петров',
-      email: 'oleksandr@sto.ua',
-      password: 'oleksandr',
-      role: 'mechanic',
-    });
+    await Inventory.insertMany(services);
 
-    const client = await User.create({
-      fullName: 'Андрій Ціпкайло',
-      email: 'andrii@sto.ua',
-      password: 'andrii',
-      role: 'client',
-      cars: [
-        { vin: 'WBA3A5C55FK123456', make: 'BMW 3 Series 2015' },
-        { vin: '1HGBH41JXMN109186', make: 'Honda Civic 2020' },
-      ],
-    });
-
-    const oil = await Inventory.create({ name: 'Заміна моторного масла', type: 'service', price: 500 });
-    const filter = await Inventory.create({ name: 'Масляний фільтр', type: 'part', price: 150 });
-    const brake = await Inventory.create({ name: 'Заміна гальмівних колодок', type: 'service', price: 800 });
-    const tires = await Inventory.create({ name: 'Шиномонтаж (4 колеса)', type: 'service', price: 400 });
-
-    await Appointment.create({
-      client: client._id,
-      mechanic: mechanic._id,
-      status: 'in_progress',
-      notes: 'Клієнт скаржиться на шум при гальмуванні',
-      repairDetails: [
-        { inventoryItem: brake._id, savedPrice: brake.price, quantity: 1 },
-        { inventoryItem: filter._id, savedPrice: filter.price, quantity: 1 },
-      ],
-    });
-
-    res.json({
-      message: 'Тестові дані успішно створено!',
-      credentials: {
-        admin: { email: 'admin@sto.ua', password: 'admin' },
-        mechanic: { email: 'mechanic@sto.ua', password: 'mechanic' },
-        mechanic2: { email: 'oleksandr@sto.ua', password: 'oleksandr' },
-        client: { email: 'andrii@sto.ua', password: 'andrii' },
+    res.status(201).json({
+      message: 'БД успішно ініціалізована!',
+      data: {
+        adminCreated: {
+          fullName: admin.fullName,
+          email: admin.email,
+          role: admin.role,
+        },
+        servicesCreated: services.length,
+        credentials: {
+          email: 'admin@sto.ua',
+          password: 'admin',
+        },
       },
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+});
+
+/**
+ * POST /api/health — Перевірка стану API
+ */
+app.post('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
 });
 
 // ОБРОБКА 404 ТА ПОМИЛОК
