@@ -35,7 +35,7 @@ async function ensureAdminPasswordIsHashed() {
 
   const passwordValue = String(admin.password || '');
   if (!passwordValue.trim()) {
-    throw new Error(`У адміністратора (${ADMIN_EMAIL}) порожній пароль. Оновіть пароль вручну.`);
+    throw new Error('У адміністратора порожній пароль. Оновіть пароль вручну.');
   }
 
   const looksHashed = BCRYPT_PREFIXES.some(prefix => passwordValue.startsWith(prefix));
@@ -43,7 +43,7 @@ async function ensureAdminPasswordIsHashed() {
   if (!looksHashed) {
     admin.markModified('password');
     await admin.save();
-    console.log(`Виявлено plaintext пароль адміністратора (${ADMIN_EMAIL}), виконано хешування`);
+    console.log('Виявлено plaintext пароль адміністратора, виконано хешування');
   }
 }
 
