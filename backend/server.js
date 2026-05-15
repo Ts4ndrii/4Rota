@@ -232,7 +232,7 @@ const generateToken = (id) => {
 /**
  * POST /api/auth/register — Реєстрація нового користувача
  */
-app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', protect, restrictTo('admin'), async (req, res) => {
   try {
     const { fullName, email, password, role, cars } = req.body;
 
