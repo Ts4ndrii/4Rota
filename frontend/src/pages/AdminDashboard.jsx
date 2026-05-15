@@ -544,21 +544,6 @@ function AdminDashboard() {
       setError('Помилка завантаження: ' + (err.response?.data?.message || err.message));
     } finally { setLoadingData(false); }
   }, []);
-
-  const fetchUsers = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const { data } = await usersAPI.getAll();
-      setUsers(data);
-    } catch (err) {
-      setError('Помилка завантаження: ' + (err.response?.data?.message || err.message));
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => { fetchUsers(); }, [fetchUsers]);
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
   const handleDelete = async (id) => {
